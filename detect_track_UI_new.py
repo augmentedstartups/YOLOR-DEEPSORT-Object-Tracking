@@ -26,6 +26,8 @@ from deep_sort_pytorch.deep_sort import DeepSort
 from collections import deque
 
 
+
+
 palette = (2 ** 11 - 1, 2 ** 15 - 1, 2 ** 20 - 1)
 data_deque = {}
 
@@ -186,6 +188,7 @@ def load_classes(path):
     return list(filter(None, names))  # filter removes empty strings (such as last line)
 
 def detect(save_img=False):
+    prevTime = 0
     out, source, weights, view_img, save_txt, imgsz, cfg, names = \
         opt.output, opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, opt.cfg, opt.names
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
@@ -324,6 +327,12 @@ def detect(save_img=False):
 
             # Stream results
             if view_img:
+                currTime = time.time()
+                fps = 1 / (currTime - prevTime)
+                prevTime = currTime
+                cv2.line(im0, (20,25), (127,25), [85,45,255], 30)
+                #im0 = draw_border(im0, (15, 60), (150, 30), color, 1, 1, 6)
+                cv2.putText(im0, f'FPS: {int(fps)}', (11, 35), 0, 1, [225, 255, 255], thickness=2, lineType=cv2.LINE_AA)
                 cv2.imshow(p, im0)
                 if cv2.waitKey(1) == ord('q'):  # q to quit
                     raise StopIteration
