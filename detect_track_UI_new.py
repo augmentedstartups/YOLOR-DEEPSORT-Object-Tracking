@@ -65,7 +65,7 @@ def compute_color_for_labels(label):
     elif label == 3:  # Motobike
         color = (0, 204, 255)
     elif label == 5:  # Bus
-    color = (0, 149, 255)
+        color = (0, 149, 255)
     else:
         color = [int((p * (label ** 2 - label + 1)) % 255) for p in palette]
     return tuple(color)
