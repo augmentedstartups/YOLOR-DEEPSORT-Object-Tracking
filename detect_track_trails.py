@@ -226,7 +226,7 @@ def detect(save_img=False):
 
                 xywh_bboxs = []
                 confs = []
-
+                oids = []
                 # Write results
                 for *xyxy, conf, cls in det:
                     # to deep sort format
@@ -234,6 +234,7 @@ def detect(save_img=False):
                     xywh_obj = [x_c, y_c, bbox_w, bbox_h]
                     xywh_bboxs.append(xywh_obj)
                     confs.append([conf.item()])
+                    oids.append(int(cls))
 
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
@@ -247,7 +248,7 @@ def detect(save_img=False):
                 xywhs = torch.Tensor(xywh_bboxs)
                 confss = torch.Tensor(confs)
 
-                outputs = deepsort.update(xywhs, confss, im0)
+                outputs = deepsort.update(xywhs, confss, oids, im0)
                 if len(outputs) > 0:
                     bbox_xyxy = outputs[:, :4]
                     identities = outputs[:, -1]
